@@ -2,6 +2,7 @@ import React from 'react';
 import Header from './Header';
 import TicketList from './TicketList';
 import NewTicketControl from './NewTicketControl';
+import Moment from 'moment';
 
 import { Switch, Route } from 'react-router-dom';
 
@@ -16,8 +17,29 @@ class App extends React.Component {
 
   handleAddingNewTicketToList(newTicket) {
     var newMasterTicketList = this.state.masterTicketList.slice();
+    newTicket.formattedWaitTime = (newTicket.timeOpen).fromNow(true);
     newMasterTicketList.push(newTicket);
     this.setState({masterTicketList: newMasterTicketList});
+  }
+
+  componentDidMount() {
+    this.waitTimeUpdateTimer = setInterval(() =>
+      this.updateTicketElapsedWaitTime(),
+      60000
+    );
+  }
+
+  updateTicketElapsedWaitTime() {
+    console.log("check");
+    let newMasterTicketList = this.state.masterTicketList.slice();
+    newMasterTicketList.forEach((ticket) =>
+      ticket.formattedWaitTime = (ticket.timeOpen).fromNow(true)
+    );
+    this.setState({masterTicketList: newMasterTicketList});
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.waitTimeUpdateTimer);
   }
 
   render(){
@@ -27,7 +49,7 @@ class App extends React.Component {
         <Switch>
           <Route exact path='/' render={()=><TicketList ticketList={this.state.masterTicketList} />} />
           <Route path='/newticket' render={()=><NewTicketControl onNewTicketCreation={this.handleAddingNewTicketToList} />} />
-        
+
         </Switch>
       </div>
     );
