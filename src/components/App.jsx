@@ -11,11 +11,18 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      masterTicketList: { },
+      masterTicketList: {
+        1: {
+          names: 'tyler and claire',
+          location: 'Dover, DE',
+          issue: 'never enough corn dogs'
+        }
+      },
       selectedTicket: null
     };
     this.handleAddingNewTicketToList = this.handleAddingNewTicketToList.bind(this);
     this.handleChangingSelectedTicket = this.handleChangingSelectedTicket.bind(this);
+    this.handleRemovingTicketFromList = this.handleRemovingTicketFromList.bind(this);
   }
 
   handleChangingSelectedTicket(ticketId){
@@ -30,6 +37,28 @@ class App extends React.Component {
     });
     newMasterTicketList[newTicketId].formattedWaitTime = newMasterTicketList[newTicketId].timeOpen.fromNow(true);
     this.setState({masterTicketList: newMasterTicketList});
+    this.handleRemovingTicketFromList(newTicketId);
+    //^call this someplace else
+  }
+
+
+  handleRemovingTicketFromList(ticketKey){
+    let newMasterTicketList = this.state.masterTicketList;
+
+
+    /// not delete but...
+
+
+
+    this.setState({masterTicketList: newMasterTicketList});
+
+
+    // let newTicketId = v4();
+    // let newMasterTicketList = Object.assign({}, this.state.masterTicketList, {
+    //   [newTicketId]: newTicket
+    // });
+    // newMasterTicketList[newTicketId].formattedWaitTime = newMasterTicketList[newTicketId].timeOpen.fromNow(true);
+    // this.setState({masterTicketList: newMasterTicketList});
   }
 
   componentDidMount() {
@@ -52,10 +81,12 @@ class App extends React.Component {
   }
 
   render(){
-    console.log(this.state.masterTicketList);
     return (
       <div>
-        <Header/>
+        <Header />
+        <h1 onClick = {() => {
+          console.log(this.state.masterTicketList);
+        }}>click me!</h1>
         <Switch>
           <Route exact path='/' render={()=><TicketList ticketList={this.state.masterTicketList} />} />
           <Route path='/newticket' render={()=><NewTicketControl onNewTicketCreation={this.handleAddingNewTicketToList} />} />
